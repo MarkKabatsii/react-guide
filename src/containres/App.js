@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import './App.css';
-import Person from './Person/Person'
+
+import classes from './App.css';
+import Persons from '../components/Persons/Persons'
+import Cockpit from '../components/Cockpit/Cockpit'
+
 
 class App extends Component {
     state = {
@@ -9,7 +12,7 @@ class App extends Component {
             {id: 1, name: 'John', age: 30},
             {id: 2, name: 'Stephani', age: 26},
         ],
-        showHandler: false,
+        showPersons: false,
     }
 
     nameChangeHandler = (event, id) => {
@@ -27,13 +30,6 @@ class App extends Component {
         })
     }
 
-    togglePersonHandler = () => {
-        const doesShow = this.state.showHandler
-        this.setState({
-            showHandler: !doesShow
-        })
-    }
-
     deletePersonHandler = (personIndex) => {
         const personsArray = [...this.state.persons];
         personsArray.splice(personIndex, 1);
@@ -42,26 +38,31 @@ class App extends Component {
         })
     }
 
+    togglePersonHandler = () => {
+        const doesShow = this.state.showPersons
+        this.setState({
+            showPersons: !doesShow
+        })
+    }
+
     render() {
-        let person = null
-        if (this.state.showHandler) {
-            person =
-                <div>
-                    {
-                        this.state.persons.map((person, index) => {
-                            return <Person
-                                click={() => this.deletePersonHandler(index)}
-                                name={person.name}
-                                age={person.age}
-                                key={person.id}
-                                changed={(event) => this.nameChangeHandler(event, person.id)}/>
-                        })
-                    }
-                </div>
+        let person = null;
+
+        if(this.state.showPersons) {
+            person = (
+                <Persons
+                    persons={this.state.persons}
+                    clicked={this.deletePersonHandler}
+                    changed={this.nameChangeHandler}/>
+            );
         }
+
         return (
-            <div className="App">
-                <button onClick={this.togglePersonHandler}>Toggle Person</button>
+            <div className={classes.App}>
+                <Cockpit
+                    showPersons={this.state.showPersons}
+                    persons={this.state.persons}
+                    clicked={this.togglePersonHandler}/>
                 {person}
             </div>
         );
